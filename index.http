@@ -1,0 +1,22 @@
+//GET API
+
+GET http://localhost:3000/transactions?page=1$perPage=10&search=white
+
+###
+
+GET http://localhost:3000/statistics?month=january
+
+###
+
+GET http://localhost:3000/bar-chart?month=january
+
+###
+
+GET http://localhost:3000/pie-chart?month=march
+
+###
+
+
+GET http://localhost:3000/combined-response?month=march&search=sample&page=1&perPage=10
+
+###
