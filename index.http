@@ -1,22 +1,25 @@
-//GET API
+// GET API for transactions for every month
 
-GET http://localhost:3000/transactions?page=1$perPage=10&search=white
-
-###
-
-GET http://localhost:3000/statistics?month=january
+GET http://localhost:3000/transactions?month=july
 
 ###
 
-GET http://localhost:3000/bar-chart?month=january
+// GET API for statistics for every month
+GET http://localhost:3000/statistics?month=march
 
 ###
 
+// GET API for bar-chart for every month
+GET http://localhost:3000/bar-chart?month=march
+
+###
+
+// GET API for pie-chart for every month
 GET http://localhost:3000/pie-chart?month=march
 
 ###
 
-
-GET http://localhost:3000/combined-response?month=march&search=sample&page=1&perPage=10
+// GET API for combined-response for every month
+GET http://localhost:3000/combined-response?month=march
 
 ###

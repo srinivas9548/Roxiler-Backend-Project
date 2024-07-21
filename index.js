@@ -40,10 +40,6 @@ initializeDBAndServer();
 //    records of that page number
 //  - Default pagination values will be like page = 1, per page = 10
 
-// API to list all transactions with search and pagination
-
-// http://localhost:3000/transactions?page=1$perPage=10&search=''
-
 app.get('/', async (request, response) => {
     try {
         response.send('Welcome! This is Roxiler Company Assignment backend domin. Please access any path to get the data.')
@@ -53,12 +49,18 @@ app.get('/', async (request, response) => {
     }
 });
 
+// API to list all transactions with search and pagination
+
+// http://localhost:3000/transactions?page=1$perPage=10&search=''
+
 app.get('/transactions', async (request, response) => {
     try {
         const page = parseInt(request.query.page) || 1;
         const perPage = parseInt(request.query.perPage) || 10;
         const search = request.query.search ? request.query.search.toLowerCase() : '';
-        const selectedMonth = request.query.month.toLowerCase() || 'march';
+        const selectedMonth = request?.query?.month?.toLowerCase() || 'march';
+
+        console.log(page, perPage);
 
         const months = {
             'january': '01',
@@ -112,8 +114,9 @@ app.get('/transactions', async (request, response) => {
 
 app.get('/statistics', async (request, response) => {
     try {
+        // console.log('Request received from /statistics');
         const selectedMonth = request.query.month || 'march';
-        // console.log('Selected Month: ', selectedMonth);
+        // console.log('Selected Month:', selectedMonth);
 
         if (!selectedMonth) {
             return response.status(400).json({ error: 'Month parameter is required.' });
@@ -145,7 +148,7 @@ app.get('/statistics', async (request, response) => {
             SELECT
               SUM(CASE WHEN sold = 1 THEN price ELSE 0 END) as totalSaleAmount,
               COUNT(CASE WHEN sold = 1 THEN 1 END) as totalSoldItems,
-              COUNT(CASE WHEN sold = 0 THEN 1 END) as totalNotSoldItems,
+              COUNT(CASE WHEN sold = 0 THEN 1 END) as totalNotSoldItems
             FROM
               products
             WHERE
@@ -227,7 +230,7 @@ app.get('/bar-chart', async (request, response) => {
                 UNION SELECT '801 - 900', 801, 900
                 UNION SELECT '901 - above', 901, 9999999
             ) as priceRanges
-             LEFT JOIN products ON strftime('%m', dataOfSale) = ? AND price BETWEEN MIN_RANGE AND MAX_RANGE
+             LEFT JOIN products ON strftime('%m', dateOfSale) = ? AND price BETWEEN MIN_RANGE AND MAX_RANGE
              GROUP BY 
                 priceRanges.priceRange;
         `;
@@ -299,7 +302,7 @@ app.get('/pie-chart', async (request, response) => {
 
 app.get('/combined-response', async (request, response) => {
     try {
-        const selectedMonth = request.query.month || 'month';
+        const selectedMonth = request.query.month || 'march';
         const { search, page, perPage } = request.query;
 
         if (!selectedMonth) {
@@ -335,7 +338,7 @@ app.get('/combined-response', async (request, response) => {
             statistics: statisticsData,
             barChart: barChartData,
             pieChart: pieChartData
-        }
+        };
 
         response.json(combinedResponse);
     } catch (error) {
@@ -372,7 +375,7 @@ async function fetchStatistics(numericMonth) {
         SELECT
             CAST(SUM(CASE WHEN sold = 1 THEN price ELSE 0 END) as INT) as totalSaleAmount,
             COUNT(CASE WHEN sold = 1 THEN 1 END) as totalSoldItems,
-            COUNT(CASE WHEN sold = 0 THEN 1 END) as totalNotSoldItems,
+            COUNT(CASE WHEN sold = 0 THEN 1 END) as totalNotSoldItems
         FROM
             products
         WHERE
